@@ -71,28 +71,78 @@ import Layout from '@layouts/Layout.astro';
       "Vattenrall",
       "Ängspiplärka",
       "Ärtsångare"
-  ]
+    ]
 
-  const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
+    const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
 
-  function loadAudio() {
-    const audio = document.getElementById("audio") as HTMLAudioElement;
-    const audio_source = document.getElementById("audio-source");
+    function loadAudio() {
+      const audio = document.getElementById("audio") as HTMLAudioElement;
+      const audio_source = document.getElementById("audio-source");
 
-    if (audio && audio_source) {
-      audio_source.setAttribute('src', bird_sound_paths[1]);
-      audio.load();
+      if (audio && audio_source) {
+        audio_source.setAttribute('src', bird_sound_paths[1]);
+        audio.load();
+      }
     }
-  }
 
-  loadAudio()
+    loadAudio()
     
+    let total_guesses = 0 
+    function iterateTotalGuesses() {
+      total_guesses ++
+      const display = document.getElementById('total-guesses')
+      if (display) {
+        display.innerText = `${total_guesses} / 65`
+      }
+    }
+    
+    let correct_guesses = 0
+    function iterateCorrectGuesses() {
+      correct_guesses ++
+
+      const display = document.getElementById('correct-guesses')
+      if (display) {
+        display.innerText = `Antal rätt ${correct_guesses} / 65`
+      }
+    }
+
+    const next_button = document.getElementById('next-button')
+    const indicate_correct = document.getElementById('indicate-correct')
+    const indicate_species = document.getElementById('indicate-species')
+    function guess() {
+      const guess_button = document.getElementById('guess-button')
+      guess_button?.setAttribute('disabled', 'true')
+
+      const guess_value = document.getElementById('user-input') as HTMLInputElement
+      if (guess_value.value == bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()) {
+        if (indicate_correct && indicate_species) {
+          indicate_correct.style.color = 'green'
+          indicate_correct.innerText = 'Du hade rätt!'
+          indicate_species.innerText = `Detta ljud kommer från en ${bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()}`
+        }
+        iterateCorrectGuesses()
+        iterateTotalGuesses()
+        next_button?.removeAttribute('disabled')
+      } else {
+        if (indicate_correct && indicate_species) {
+          indicate_correct.style.color = 'red'
+          indicate_correct.innerText = 'Du hade fel,'
+          indicate_species.innerText = `Detta ljud kommer från en ${bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()}`
+        }
+        iterateTotalGuesses()
+        next_button?.removeAttribute('disabled')
+      }
+    }
+
+    document.getElementById('guess-button')?.addEventListener('click', guess)
 
   </script>
 
 	<main class="margin-inline-100 flex align-items-center justify-content-center" style="height: 100dvh;">
     <container-text style="width: min(60ch, 100%);">
-       <flex class="justify-content-center">
+      <small class="font-weight-500" id="indicate-correct">‎</small>
+      <h1 class="margin-top-25" style="font-size: 1.25rem;" id="indicate-species">Detta ljud kommer från en?</h1>
+      <flex class="justify-content-center">
         <audio controls id="audio" class="flex-grow-100">
             
           <source type="audio/mp3" id="audio-source">
@@ -102,15 +152,15 @@ import Layout from '@layouts/Layout.astro';
       <flex class="align-items-flex-end gap-25">
         <label class="font-weight-500 block margin-top-300 flex-grow-100">
           Vilken fågel hörde du?
-          <input type="text" class="block margin-top-25"  />
+          <input type="text" class="block margin-top-25" id="user-input"  />
         </label>
-        <button class="font-weight-500" id="guess-button">Gissa</button>  
+        <button class="font-weight-500" id="guess-button" >Gissa</button>  
       </flex>
 
       <flex class="flex justify-content-space-between margin-top-100 align-items-center" id="amount-correct">
-        <small>0 / 65</small>
+        <small id="total-guesses">0 / 65</small>
         <flex class="gap-100 align-items-center">
-          <small>Antal rätt: 0 / 65</small>
+          <small id="correct-guesses">Antal rätt: 0 / 65</small>
           <button class="font-weight-500 flex align-items-center gap-25 padding-inline-100" style="border-radius: 9999px;" disabled id="next-button">
             Nästa
             <img src="arrow-right.svg" width="20" height="20" alt="" />
