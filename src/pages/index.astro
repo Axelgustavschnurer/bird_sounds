@@ -79,14 +79,8 @@ import Layout from '@layouts/Layout.astro';
       return removed;
     }
 
-    let randomBird: string; 
-    function setRandom() {
-      randomBird = selectRandom()
-    }
-    
-    setRandom()
-
-    const bird_sound_path = `http://localhost:4321/sounds/${randomBird}.mp3`
+    let randomBird: string = selectRandom(); 
+    let bird_sound_path = `https://bird-sounds.vercel.app/sounds/${randomBird}.mp3`
 
     function loadAudio() {
       const audio = document.getElementById("audio") as HTMLAudioElement;
@@ -122,11 +116,12 @@ import Layout from '@layouts/Layout.astro';
     const next_button = document.getElementById('next-button')
     const indicate_correct = document.getElementById('indicate-correct')
     const indicate_species = document.getElementById('indicate-species')
+    const guess_button = document.getElementById('guess-button')
+    const guess_value = document.getElementById('user-input') as HTMLInputElement
+
     function guess() {
-      const guess_button = document.getElementById('guess-button')
       guess_button?.setAttribute('disabled', 'true')
 
-      const guess_value = document.getElementById('user-input') as HTMLInputElement
       if (guess_value.value.toLowerCase() == randomBird.toLowerCase()) {
         if (indicate_correct && indicate_species) {
           indicate_correct.style.color = 'green'
@@ -148,6 +143,24 @@ import Layout from '@layouts/Layout.astro';
     }
 
     document.getElementById('guess-button')?.addEventListener('click', guess)
+
+    function reset() {
+
+      if (indicate_correct && indicate_species) {
+        indicate_correct.style.color = 'initial'
+        indicate_correct.innerText = ''
+        indicate_species.innerText = `Detta ljud kommer från en?`
+      }
+
+      guess_value.value = ''
+      guess_button?.removeAttribute('disabled')
+      next_button?.setAttribute('disabled', 'true')
+      randomBird = selectRandom()
+      bird_sound_path = `http://localhost:4321/sounds/${randomBird}.mp3`
+      loadAudio()
+    }
+
+    document.getElementById('next-button')?.addEventListener('click', reset)
 
   </script>
 
@@ -174,7 +187,7 @@ import Layout from '@layouts/Layout.astro';
         <small id="total-guesses">0 / 65</small>
         <flex class="gap-100 align-items-center">
           <small id="correct-guesses">Antal rätt: 0 / 65</small>
-          <button class="font-weight-500 flex align-items-center gap-25 padding-inline-100" style="border-radius: 9999px;" disabled id="next-button">
+          <button class="font-weight-500 flex align-items-center gap-25 padding-inline-100" style="border-radius: 9999px;" disabled id="next-button" >
             Nästa
             <img src="arrow-right.svg" width="20" height="20" alt="" />
           </button>
