@@ -156,7 +156,7 @@ import Layout from '@layouts/Layout.astro';
       guess_button?.removeAttribute('disabled')
       next_button?.setAttribute('disabled', 'true')
       randomBird = selectRandom()
-      bird_sound_path = `http://localhost:4321/sounds/${randomBird}.mp3`
+      bird_sound_path = `https://bird-sounds.vercel.app/sounds/${randomBird}.mp3`
       loadAudio()
     }
 
