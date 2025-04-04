@@ -73,14 +73,27 @@ import Layout from '@layouts/Layout.astro';
       "Ärtsångare"
     ]
 
-    const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
+    function selectRandom() {
+      const index = Math.floor(Math.random() * bird_names.length);
+      const [removed] = bird_names.splice(index, 1); // Removes and returns the element
+      return removed;
+    }
+
+    let randomBird: string; 
+    function setRandom() {
+      randomBird = selectRandom()
+    }
+    
+    setRandom()
+
+    const bird_sound_path = `http://localhost:4321/sounds/${randomBird}.mp3`
 
     function loadAudio() {
       const audio = document.getElementById("audio") as HTMLAudioElement;
       const audio_source = document.getElementById("audio-source");
 
       if (audio && audio_source) {
-        audio_source.setAttribute('src', bird_sound_paths[1]);
+        audio_source.setAttribute('src', bird_sound_path);
         audio.load();
       }
     }
@@ -114,11 +127,11 @@ import Layout from '@layouts/Layout.astro';
       guess_button?.setAttribute('disabled', 'true')
 
       const guess_value = document.getElementById('user-input') as HTMLInputElement
-      if (guess_value.value == bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()) {
+      if (guess_value.value.toLowerCase() == randomBird.toLowerCase()) {
         if (indicate_correct && indicate_species) {
           indicate_correct.style.color = 'green'
           indicate_correct.innerText = 'Du hade rätt!'
-          indicate_species.innerText = `Detta ljud kommer från en ${bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()}`
+          indicate_species.innerText = `Detta ljud kommer från en ${randomBird.toLowerCase()}`
         }
         iterateCorrectGuesses()
         iterateTotalGuesses()
@@ -127,7 +140,7 @@ import Layout from '@layouts/Layout.astro';
         if (indicate_correct && indicate_species) {
           indicate_correct.style.color = 'red'
           indicate_correct.innerText = 'Du hade fel,'
-          indicate_species.innerText = `Detta ljud kommer från en ${bird_sound_paths[1].split("/").pop()?.replace(".mp3", "").toLowerCase()}`
+          indicate_species.innerText = `Detta ljud kommer från en ${randomBird}`
         }
         iterateTotalGuesses()
         next_button?.removeAttribute('disabled')
