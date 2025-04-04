@@ -73,39 +73,52 @@ import Layout from '@layouts/Layout.astro';
       "Ärtsångare"
   ]
 
-    const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
+  const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
+
+  function loadAudio() {
+    const audio = document.getElementById("audio") as HTMLAudioElement;
+    const audio_source = document.getElementById("audio-source");
+
+    if (audio && audio_source) {
+      audio_source.setAttribute('src', bird_sound_paths[1]);
+      audio.load();
+    }
+  }
+
+  loadAudio()
     
-    const birdList = document.getElementById("bird-list");
-
-    bird_names.forEach((name, i) => {
-      const li = document.createElement("li");
-
-      const label = document.createElement("p");
-      label.textContent = name;
-
-      const audio = document.createElement("audio");
-      audio.controls = true;
-
-      const source = document.createElement("source");
-      source.src = bird_sound_paths[i];
-      source.type = "audio/mp3";
-
-      audio.appendChild(source);
-      li.appendChild(label);
-      li.appendChild(audio);
-      if (birdList) {
-        birdList.appendChild(li);
-      }
-    });
 
   </script>
 
-	<main>
-    <ul id="bird-list"></ul>
+	<main class="margin-inline-100 flex align-items-center justify-content-center" style="height: 100dvh;">
+    <container-text style="width: min(60ch, 100%);">
+       <flex class="justify-content-center">
+        <audio controls id="audio" class="flex-grow-100">
+            
+          <source type="audio/mp3" id="audio-source">
+        </audio>
+      </flex>
 
-    <label>Vilken fågel?</label>
-    <input type="text" />
-    <button>Gissa</button>  
+      <flex class="align-items-flex-end gap-25">
+        <label class="font-weight-500 block margin-top-300 flex-grow-100">
+          Vilken fågel hörde du?
+          <input type="text" class="block margin-top-25"  />
+        </label>
+        <button class="font-weight-500" id="guess-button">Gissa</button>  
+      </flex>
+
+      <flex class="flex justify-content-space-between margin-top-100 align-items-center" id="amount-correct">
+        <small>0 / 65</small>
+        <flex class="gap-100 align-items-center">
+          <small>Antal rätt: 0 / 65</small>
+          <button class="font-weight-500 flex align-items-center gap-25 padding-inline-100" style="border-radius: 9999px;" disabled id="next-button">
+            Nästa
+            <img src="arrow-right.svg" width="20" height="20" alt="" />
+          </button>
+        </flex>
+      </flex>
+
+    </container-text>
 	</main>
 </Layout>
 
