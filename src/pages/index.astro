@@ -1,11 +1,114 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from '@layouts/Layout.astro';
 ---
 
 <Layout>
-	<Welcome />
+
+  <script>
+    const bird_names = [
+      "Berguv",
+      "Björktrast",
+      "Blåmes",
+      "Bofink",
+      "Domherre",
+      "Drillsnäppa",
+      "Enkelbeckasin",
+      "Entita",
+      "Fasan",
+      "Gransångare",
+      "Gräshoppsångare",
+      "Gråsparv",
+      "Grönbena",
+      "Grönfink",
+      "Gröngöling",
+      "Grönsångare",
+      "Gulsparv",
+      "Gärdsmyg",
+      "Gök",
+      "Hämpling",
+      "Kattuggla",
+      "Koltrast",
+      "Korp",
+      "Lövsångare",
+      "Mindre hackspett",
+      "Morkulla",
+      "Näktergal",
+      "Nötväcka",
+      "Ormvråk",
+      "Ringduva",
+      "Rosenfink",
+      "Rödbena",
+      "Rödhake",
+      "Rödstjärt",
+      "Rödvingetrast",
+      "Rördrom",
+      "Rörsångare",
+      "Skogsduva",
+      "Skäggdopping",
+      "Sommargylling",
+      "Sothöna",
+      "Spillkråka",
+      "Stare",
+      "Steglits",
+      "Storspov",
+      "Större hackspett",
+      "Svart-vit flugsnappare",
+      "Svarthätta",
+      "Svartmes",
+      "Sävsparv",
+      "Sävsångare",
+      "Sånglärka",
+      "Sångsvan",
+      "Talgoxe",
+      "Talltita",
+      "Taltrast",
+      "Tofsvipa",
+      "Trana",
+      "Trädkrypare",
+      "Trädpiplärka",
+      "Turkduva",
+      "Törnsångare",
+      "Vattenrall",
+      "Ängspiplärka",
+      "Ärtsångare"
+  ]
+
+    const bird_sound_paths = bird_names.map(name => `http://localhost:4321/sounds/${name}.mp3`);
+    
+    const birdList = document.getElementById("bird-list");
+
+    bird_names.forEach((name, i) => {
+      const li = document.createElement("li");
+
+      const label = document.createElement("p");
+      label.textContent = name;
+
+      const audio = document.createElement("audio");
+      audio.controls = true;
+
+      const source = document.createElement("source");
+      source.src = bird_sound_paths[i];
+      source.type = "audio/mp3";
+
+      audio.appendChild(source);
+      li.appendChild(label);
+      li.appendChild(audio);
+      if (birdList) {
+        birdList.appendChild(li);
+      }
+    });
+
+  </script>
+
+	<main>
+    <ul id="bird-list"></ul>
+
+    <label>Vilken fågel?</label>
+    <input type="text" />
+    <button>Gissa</button>  
+	</main>
 </Layout>
+
+<style>
+
+</style>
